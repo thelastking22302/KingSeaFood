@@ -14,7 +14,7 @@ func (sql *sql) SignUp(ctx context.Context, data *model.Users) (*model.Users, er
 
 func (sql *sql) SignIn(ctx context.Context, data *model.Users) error {
 	var user model.Users
-	if err := sql.db.Table("users").Where("email = ?", data.Email).First(&data).Error; err != nil {
+	if err := sql.db.Table("users").Where("email = ?", data.Email).First(&user).Error; err != nil {
 		return err
 	}
 	data.Email = user.Email

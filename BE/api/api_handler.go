@@ -102,8 +102,6 @@ func SignInHandler(db *gorm.DB) gin.HandlerFunc {
 			})
 			return
 		}
-
-		// Kiểm tra mật khẩu
 		isValidPassword := security.ComparePasswords(users.Password, []byte(reqSignIn.Password))
 		if !isValidPassword {
 			c.JSON(http.StatusBadRequest, gin.H{
