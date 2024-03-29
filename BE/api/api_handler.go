@@ -68,3 +68,50 @@ func SignUpHandler(db *gorm.DB) gin.HandlerFunc {
 		c.JSON(http.StatusOK, common.ReponseData(dataUser))
 	}
 }
+
+// SIGNIN
+func SignInHandler(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var reqSignIn req_users.RequestSignIn
+		if err := c.ShouldBind(&reqSignIn); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error":   err.Error(),
+				"comment": "reqSignIn failed",
+			})
+			return
+		}
+		validate := validator.New()
+		if err := validate.Struct(reqSignIn); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error":   err.Error(),
+				"comment": "Can't validate",
+			})
+			return
+		}
+
+		users := model.Users{
+			Email:    reqSignIn.Email,
+			Password: reqSignIn.Password,
+		}
+
+		biz := users_bussiness.NewSignInController(service.NewSql(db))
+		if err := biz.NewSignIn(c.Request.Context(), &users); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error":   err.Error(),
+				"comment": "reqSignIn database failed",
+			})
+			return
+		}
+
+		// Kiểm tra mật khẩu
+		isValidPassword := security.ComparePasswords(users.Password, []byte(reqSignIn.Password))
+		if !isValidPassword {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"comment": "Email or password is incorrect",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, common.ReponseData("Đăng nhập thành công"))
+	}
+}

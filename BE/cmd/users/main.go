@@ -12,6 +12,7 @@ func main() {
 	users := r.Group("/users")
 	{
 		users.POST("/sign-up", api.SignUpHandler(server.Run()))
+		users.POST("/sign-in", api.SignInHandler(server.Run()))
 	}
 	r.Run(":3250")
 }
