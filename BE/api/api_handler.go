@@ -46,7 +46,7 @@ func SignUpHandler(db *gorm.DB) gin.HandlerFunc {
 		time := time.Now().UTC()
 		pwd := security.HashAndSalt([]byte(reqSignUp.Password))
 		role := model.MEMBERS.String()
-		users := &model.Users{
+		users := model.Users{
 			UserID:    idUsers.String(),
 			FullName:  reqSignUp.FullName,
 			Email:     reqSignUp.Email,
@@ -57,7 +57,7 @@ func SignUpHandler(db *gorm.DB) gin.HandlerFunc {
 			UpdatedAt: &time,
 		}
 		biz := users_bussiness.NewSignUpController(service.NewSql(db))
-		dataUser, err := biz.NewSignUp(c.Request.Context(), users)
+		dataUser, err := biz.NewSignUp(c.Request.Context(), &users)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error":   err.Error(),

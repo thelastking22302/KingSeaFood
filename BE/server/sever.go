@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"log"
 	"thelastking/kingseafood/pkg/db"
+
+	"gorm.io/gorm"
 )
 
-func Run() {
+func Run() *gorm.DB {
 	config := &db.Config{
 		Host:     "localhost",
 		Port:     5432,
@@ -19,4 +21,5 @@ func Run() {
 		log.Fatalf("Fails to connect to database: %v", err)
 	}
 	fmt.Printf("Connect suscess to database: %v", db)
+	return db
 }
