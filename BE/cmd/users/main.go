@@ -2,6 +2,7 @@ package main
 
 import (
 	"thelastking/kingseafood/api"
+	"thelastking/kingseafood/middleware"
 	"thelastking/kingseafood/server"
 
 	"github.com/gin-gonic/gin"
@@ -9,10 +10,16 @@ import (
 
 func main() {
 	r := gin.Default()
-	users := r.Group("/users")
+	auth := r.Group("/auth")
 	{
-		users.POST("/sign-up", api.SignUpHandler(server.Run()))
-		users.POST("/sign-in", api.SignInHandler(server.Run()))
+		auth.POST("/sign-up", api.SignUpHandler(server.Run()))
+		auth.POST("/sign-in", api.SignInHandler(server.Run()))
+	}
+	users := r.Group("/users", middleware.RefreshJWTMiddleware(), middleware.JWTMiddleware())
+	{
+		users.GET("/profile/id", api.ProfileUser(server.Run()))
+		users.PATCH("/update/id", api.UpdateUserHandler(server.Run()))
+		users.DELETE("/delete/id", api.DeletedUserHandler(server.Run()))
 	}
 	r.Run(":3250")
 }

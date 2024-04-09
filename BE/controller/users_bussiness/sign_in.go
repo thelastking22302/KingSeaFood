@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"thelastking/kingseafood/model"
+	"thelastking/kingseafood/model/req_users"
 )
 
 type SignInService interface {
-	SignIn(ctx context.Context, data *model.Users) error
+	SignIn(ctx context.Context, data *req_users.RequestSignIn) (*model.Users, error)
 }
 
 type SignInController struct {
@@ -17,12 +18,13 @@ type SignInController struct {
 func NewSignInController(s SignInService) *SignInController {
 	return &SignInController{s: s}
 }
-func (si *SignInController) NewSignIn(ctx context.Context, data *model.Users) error {
+func (si *SignInController) NewSignIn(ctx context.Context, data *req_users.RequestSignIn) (*model.Users, error) {
 	if data.Email == "" {
-		return errors.New("SignIn error")
+		return nil, errors.New("SignIn error")
 	}
-	if err := si.s.SignIn(ctx, data); err != nil {
-		return errors.New("SignIn failed")
+	dataUsers, err := si.s.SignIn(ctx, data)
+	if err != nil {
+		return nil, errors.New("SignIn failed")
 	}
-	return nil
+	return dataUsers, nil
 }
