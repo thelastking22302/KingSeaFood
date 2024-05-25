@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func IsAdmin(next gin.HandlerFunc) gin.HandlerFunc {
+func IsAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data model.Users
 		if err := c.ShouldBind(&data); err != nil {
@@ -23,6 +23,6 @@ func IsAdmin(next gin.HandlerFunc) gin.HandlerFunc {
 			})
 			return
 		}
-		next(c)
+		c.Next()
 	}
 }
