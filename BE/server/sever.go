@@ -10,11 +10,11 @@ import (
 
 func Run() *gorm.DB {
 	config := &db.Config{
-		Host:     "localhost",
+		Host:     "*****",
 		Port:     5432,
-		Password: "220302",
-		User:     "postgres",
-		DbName:   "seafood",
+		Password: "****",
+		User:     "****",
+		DbName:   "*****",
 	}
 	db, err := config.NewConnection()
 	if err != nil {
